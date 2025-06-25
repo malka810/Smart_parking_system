@@ -1,4 +1,3 @@
-// payment-service/src/main/java/lk/ijse/paymentservice/entity/Payment.java
 package lk.ijse.paymentservice.entity;
 
 import jakarta.persistence.*;

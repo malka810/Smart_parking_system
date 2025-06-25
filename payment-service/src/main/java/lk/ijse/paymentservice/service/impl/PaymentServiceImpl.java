@@ -30,19 +30,19 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentResponseDTO processPayment(PaymentRequestDTO paymentRequest) {
-        // Validate payment details
+
         if (!validatePaymentDetails(paymentRequest)) {
             return createFailedResponse(paymentRequest, "Invalid payment details");
         }
 
-        // Simulate payment processing
+
         boolean isPaymentSuccessful = simulatePaymentProcessing(paymentRequest);
 
         if (!isPaymentSuccessful) {
             return createFailedResponse(paymentRequest, "Payment processing failed");
         }
 
-        // Create and save payment record
+
         Payment payment = createPaymentRecord(paymentRequest);
         paymentRepository.save(payment);
 
@@ -74,7 +74,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElse("NOT_FOUND");
     }
 
-    // Helper methods
+
     private boolean validatePaymentDetails(PaymentRequestDTO paymentRequest) {
         if (paymentRequest.getAmount() == null || paymentRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             return false;
@@ -96,7 +96,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private boolean simulatePaymentProcessing(PaymentRequestDTO paymentRequest) {
-        return Math.random() >= 0.1; // 90% success rate
+        return Math.random() >= 0.1;
     }
 
     private Payment createPaymentRecord(PaymentRequestDTO paymentRequest) {

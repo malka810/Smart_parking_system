@@ -1,4 +1,3 @@
-// payment-service/src/main/java/lk/ijse/paymentservice/dto/ReceiptDTO.java
 package lk.ijse.paymentservice.dto;
 
 import java.time.LocalDateTime;

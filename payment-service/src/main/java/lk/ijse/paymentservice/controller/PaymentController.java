@@ -1,4 +1,4 @@
-// payment-service/src/main/java/lk/ijse/paymentservice/controller/PaymentController.java
+
 package lk.ijse.paymentservice.controller;
 
 import lk.ijse.paymentservice.dto.PaymentRequestDTO;

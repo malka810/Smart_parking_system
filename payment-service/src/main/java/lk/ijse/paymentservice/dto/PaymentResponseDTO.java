@@ -1,9 +1,5 @@
-// payment-service/src/main/java/lk/ijse/paymentservice/dto/PaymentResponseDTO.java
 package lk.ijse.paymentservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
