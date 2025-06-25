@@ -1,3 +1,6 @@
+server:
+  port: 8888
+
 spring:
   application:
     name: config-server
@@ -21,9 +24,8 @@ management:
 eureka:
   client:
     service-url:
-      default-Zone: http://localhost:8761/eureka/
-    enabled: true
-instance:
-  prefer-ip-address: true
-  hostname: localhost
-
+      default-zone: http://localhost:8761/eureka/
+    enabled: true  # Enable Eureka registration
+  instance:
+    prefer-ip-address: true
+    hostname: localhost

@@ -7,12 +7,24 @@ spring:
   cloud:
    gateway:
      routes:
-       -id: user-service
-       uri: lb://USER-SERVICE
-       predicates:
-         -Path=/user-service/**
-       filters:
-         - StripPrefix=1
+       - id: user-service
+         uri:  lb://USER-SERVICE
+         predicates:
+           - Path=/user-service/**
+         filters:
+           - StripPrefix=1
+       - id: vehicle-service
+         uri: lb://VEHICLE-SERVICE
+         predicates:
+           - Path=/vehicle-service/**
+         filters:
+           - StripPrefix=1
+       - id: parking-space-service
+         uri: lb://PARKING-SPACE-SERVICE
+         predicates:
+           - Path=/parking-space-service/**
+         filters:
+           - StripPrefix=1
 
 management:
   endpoints:
