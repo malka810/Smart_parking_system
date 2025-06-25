@@ -25,7 +25,12 @@ spring:
            - Path=/parking-space-service/**
          filters:
            - StripPrefix=1
-
+       - id: payment-service
+         uri: lb://PAYMENT-SERVICE
+         predicates:
+           - Path=/payment-service/**
+         filters:
+           - StripPrefix=1
 management:
   endpoints:
     web:
