@@ -18,4 +18,6 @@ public interface VehicleService {
     List<VehicleDTO> getVehiclesByUser(Long id);
 
     String updateParkingStatus(Long id, boolean isParked);
+
+    List<VehicleDTO> getAllVehicles();
 }

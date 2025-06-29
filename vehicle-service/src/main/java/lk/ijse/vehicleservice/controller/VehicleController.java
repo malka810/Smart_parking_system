@@ -15,6 +15,12 @@ public class VehicleController {
     @Autowired
     private VehicleServiceImpl vehicleService;
 
+    @GetMapping
+    public ResponseEntity<List<VehicleDTO>> getAllVehicles() {
+        List<VehicleDTO> allVehicles = vehicleService.getAllVehicles();
+        return !allVehicles.isEmpty() ? ResponseEntity.ok(allVehicles) : ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerVehicle(@RequestBody VehicleDTO vehicleDTO) {
         return ResponseEntity.ok(vehicleService.registerVehicle(vehicleDTO));

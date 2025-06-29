@@ -1,9 +1,6 @@
 package lk.ijse.parkingspaceservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 
 import java.time.LocalDateTime;
@@ -12,11 +9,17 @@ public class ParkingSpace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long parking_id;
+    @Column(nullable = false)
     private String zone;
+    @Column(nullable = false)
     private String location;
-    private boolean isAvailable;
+    @Column(nullable = false)
+    private boolean isAvailable = true;
+    @Column(nullable = false)
     private String size; // SMALL, MEDIUM, LARGE
+    @Column(nullable = false)
     private String type; // REGULAR, HANDICAPPED, ELECTRIC
+    @Column(nullable = false)
     private Double hourlyRate;
     private LocalDateTime occupiedAt;
     private LocalDateTime releasedAt;

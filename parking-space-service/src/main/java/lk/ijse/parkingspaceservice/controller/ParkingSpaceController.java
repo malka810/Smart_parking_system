@@ -1,8 +1,8 @@
 package lk.ijse.parkingspaceservice.controller;
 
-import jakarta.ws.rs.NotFoundException;
 import lk.ijse.parkingspaceservice.dto.ParkingSpaceDTO;
 import lk.ijse.parkingspaceservice.service.ParkingSpaceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,88 +10,64 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/parking-space-service/api/v1/parking-space")
+@RequestMapping("/api/v1/parking-spaces")
 public class ParkingSpaceController {
 
     @Autowired
-    private ParkingSpaceService parkingSpaceService;
+    private final ParkingSpaceService parkingSpaceService;
+
+    public ParkingSpaceController(ParkingSpaceService parkingSpaceService) {
+        this.parkingSpaceService = parkingSpaceService;
+    }
 
     @PostMapping
-    public ResponseEntity<ParkingSpaceDTO> saveParkingSpace(@RequestBody ParkingSpaceDTO parkingSpaceDTO) {
-        return ResponseEntity.ok(parkingSpaceService.saveParkingSpace(parkingSpaceDTO));
+    public ResponseEntity<ParkingSpaceDTO> createParkingSpace(@RequestBody ParkingSpaceDTO parkingSpaceDTO) {
+        return ResponseEntity.ok(parkingSpaceService.createParkingSpace(parkingSpaceDTO));
     }
 
-    @PutMapping
-    public ResponseEntity<ParkingSpaceDTO> updateParkingSpace(@RequestBody ParkingSpaceDTO parkingSpaceDTO) throws NotFoundException {
-        ParkingSpaceDTO updatedSpace = parkingSpaceService.updateParkingSpace(parkingSpaceDTO);
-        return updatedSpace != null ? ResponseEntity.ok(updatedSpace) : ResponseEntity.notFound().build();
+    @PutMapping("/{id}")
+    public ResponseEntity<ParkingSpaceDTO> updateParkingSpace(
+            @PathVariable Long id,
+            @RequestBody ParkingSpaceDTO parkingSpaceDTO) {
+        return ResponseEntity.ok(parkingSpaceService.updateParkingSpace(id, parkingSpaceDTO));
     }
 
-    @DeleteMapping("/{parking_id}")
-    public ResponseEntity<Boolean> deleteParkingSpace(@PathVariable Long parking_id) throws NotFoundException {
-        return ResponseEntity.ok(parkingSpaceService.deleteParkingSpace(parking_id));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteParkingSpace(@PathVariable Long id) {
+        parkingSpaceService.deleteParkingSpace(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{parking_id}")
-    public ResponseEntity<ParkingSpaceDTO> getParkingSpaceById(@PathVariable Long parking_id) throws NotFoundException {
-        ParkingSpaceDTO space = parkingSpaceService.getParkingSpaceById(parking_id);
-        return space != null ? ResponseEntity.ok(space) : ResponseEntity.notFound().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<ParkingSpaceDTO> getParkingSpaceById(@PathVariable Long id) {
+        return ResponseEntity.ok(parkingSpaceService.getParkingSpaceById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<ParkingSpaceDTO>> getAllParkingSpaces() {
-        List<ParkingSpaceDTO> spaces = parkingSpaceService.getAllParkingSpaces();
-        return !spaces.isEmpty() ? ResponseEntity.ok(spaces) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(parkingSpaceService.getAllParkingSpaces());
     }
 
-    @GetMapping("/zone/{zone}")
-    public ResponseEntity<List<ParkingSpaceDTO>> getParkingSpacesByZone(@PathVariable String zone) {
-        List<ParkingSpaceDTO> spaces = parkingSpaceService.getParkingSpacesByZone(zone);
-        return !spaces.isEmpty() ? ResponseEntity.ok(spaces) : ResponseEntity.notFound().build();
+    @GetMapping("/filter")
+    public ResponseEntity<List<ParkingSpaceDTO>> getParkingSpacesByFilter(
+            @RequestParam(required = false) String zone,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String size,
+            @RequestParam(required = false) Boolean available) {
+        return ResponseEntity.ok(parkingSpaceService.getParkingSpacesByFilter(
+                zone, location, type, size, available));
     }
 
-    @GetMapping("/location/{location}")
-    public ResponseEntity<List<ParkingSpaceDTO>> getParkingSpacesByLocation(@PathVariable String location) {
-        List<ParkingSpaceDTO> spaces = parkingSpaceService.getParkingSpacesByLocation(location);
-        return !spaces.isEmpty() ? ResponseEntity.ok(spaces) : ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<ParkingSpaceDTO>> getParkingSpacesByType(@PathVariable String type) {
-        List<ParkingSpaceDTO> spaces = parkingSpaceService.getParkingSpacesByType(type);
-        return !spaces.isEmpty() ? ResponseEntity.ok(spaces) : ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/size/{size}")
-    public ResponseEntity<List<ParkingSpaceDTO>> getParkingSpacesBySize(@PathVariable String size) {
-        List<ParkingSpaceDTO> spaces = parkingSpaceService.getParkingSpacesBySize(size);
-        return !spaces.isEmpty() ? ResponseEntity.ok(spaces) : ResponseEntity.notFound().build();
-    }
-
-    @PatchMapping("/reserve/{parking_id}")
+    @PatchMapping("/{id}/reserve")
     public ResponseEntity<ParkingSpaceDTO> reserveParkingSpace(
-            @PathVariable Long parking_id,
-            @RequestParam String reservedBy) throws NotFoundException {
-        ParkingSpaceDTO space = parkingSpaceService.reserveParkingSpace(parking_id, reservedBy);
-        return space != null ? ResponseEntity.ok(space) : ResponseEntity.notFound().build();
+            @PathVariable Long id,
+            @RequestParam String reservedBy) {
+        return ResponseEntity.ok(parkingSpaceService.reserveParkingSpace(id, reservedBy));
     }
 
-    @PatchMapping("/release/{parking_id}")
-    public ResponseEntity<ParkingSpaceDTO> releaseParkingSpace(@PathVariable Long parking_id) throws NotFoundException {
-        ParkingSpaceDTO space = parkingSpaceService.releaseParkingSpace(parking_id);
-        return space != null ? ResponseEntity.ok(space) : ResponseEntity.notFound().build();
+    @PatchMapping("/{id}/release")
+    public ResponseEntity<ParkingSpaceDTO> releaseParkingSpace(@PathVariable Long id) {
+        return ResponseEntity.ok(parkingSpaceService.releaseParkingSpace(id));
     }
-
-    @GetMapping("/available/zone/{zone}")
-    public ResponseEntity<List<ParkingSpaceDTO>> getAvailableSpacesInZone(@PathVariable String zone) {
-        List<ParkingSpaceDTO> spaces = parkingSpaceService.getAvailableSpacesInZone(zone);
-        return !spaces.isEmpty() ? ResponseEntity.ok(spaces) : ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/available/location/{location}")
-    public ResponseEntity<List<ParkingSpaceDTO>> getAvailableSpacesInLocation(@PathVariable String location) {
-        List<ParkingSpaceDTO> spaces = parkingSpaceService.getAvailableSpacesInLocation(location);
-        return !spaces.isEmpty() ? ResponseEntity.ok(spaces) : ResponseEntity.notFound().build();
-    }
-
 }

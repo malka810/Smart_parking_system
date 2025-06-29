@@ -1,12 +1,15 @@
 package lk.ijse.parkingspaceservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.time.LocalDateTime;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ParkingSpaceDTO {
     private Long parking_id;
     private String zone;
     private String location;
-    private boolean isAvailable;
+    private boolean isAvailable = true;
     private String size;
     private String type;
     private Double hourlyRate;

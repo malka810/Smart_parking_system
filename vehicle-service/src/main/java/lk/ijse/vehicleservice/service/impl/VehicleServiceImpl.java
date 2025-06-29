@@ -6,6 +6,7 @@ import lk.ijse.vehicleservice.repo.VehicleRepository;
 import lk.ijse.vehicleservice.service.VehicleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,9 +24,14 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public String registerVehicle(VehicleDTO vehicleDTO) {
-        Vehicle vehicle = modelMapper.map(vehicleDTO, Vehicle.class);
-        vehicleRepository.save(vehicle);
-        return "Vehicle registered successfully with ID: " + vehicle.getVehicleId();
+        try {
+            Vehicle vehicle = modelMapper.map(vehicleDTO, Vehicle.class);
+            vehicleRepository.save(vehicle);
+            return "Vehicle registered successfully with ID: " + vehicle.getVehicleId();
+        } catch (ObjectOptimisticLockingFailureException e) {
+            // Retry logic or return appropriate error message
+            return "Vehicle registration failed due to concurrent modification. Please try again.";
+        }
     }
 
     @Override
@@ -61,21 +67,40 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleDTO> getVehiclesByUser(Long id) {
-        Optional<Vehicle> vehicles = vehicleRepository.findById(id);
+        Optional<Vehicle> vehicles = vehicleRepository.findById(id); // Assuming you have this method
         return vehicles.stream()
-                .map(vehicle -> modelMapper.map(vehicle, VehicleDTO.class))
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
-
     @Override
     public String updateParkingStatus(Long id, boolean isParked) {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
         if (optionalVehicle.isPresent()) {
             Vehicle vehicle = optionalVehicle.get();
-            vehicle.isParked(isParked);
+            vehicle.setParked(isParked);  // Use setter method
             vehicleRepository.save(vehicle);
             return "Parking status updated to: " + isParked;
         }
         return "Vehicle not found";
+    }
+
+    @Override
+    public List<VehicleDTO> getAllVehicles() {
+        List<Vehicle> vehicles = vehicleRepository.findAll(); // Assuming you're using JPA
+        return vehicles.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    private VehicleDTO convertToDto(Vehicle vehicle) {
+        return new VehicleDTO(
+                vehicle.getVehicleId(),
+                vehicle.getLicensePlate(),
+                vehicle.getMake(),
+                vehicle.getModel(),
+                vehicle.getType(),
+                vehicle.getColor(),
+                vehicle.getId(),
+                vehicle.isParked());
     }
 }

@@ -90,8 +90,8 @@ public class Vehicle {
         this.id = id;
     }
 
-    public boolean isParked(boolean isParked) {
-        return this.isParked;
+    public boolean isParked() {
+        return isParked;
     }
 
     public void setParked(boolean parked) {
