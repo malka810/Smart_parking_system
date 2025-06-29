@@ -22,7 +22,7 @@ public class ParkingSpaceServiceImpl implements ParkingSpaceService {
     private final ParkingSpaceRepository parkingSpaceRepository;
     private final ModelMapper modelMapper;
 
-    @Autowired // Optional in newer Spring versions
+    @Autowired
     public ParkingSpaceServiceImpl(ParkingSpaceRepository parkingSpaceRepository, ModelMapper modelMapper) {
         this.parkingSpaceRepository = parkingSpaceRepository;
         this.modelMapper = modelMapper;
@@ -31,7 +31,7 @@ public class ParkingSpaceServiceImpl implements ParkingSpaceService {
     @Override
     public ParkingSpaceDTO createParkingSpace(ParkingSpaceDTO parkingSpaceDTO) {
         ParkingSpace parkingSpace = modelMapper.map(parkingSpaceDTO, ParkingSpace.class);
-        parkingSpace.setAvailable(true); // Ensure new spaces are available by default
+        parkingSpace.setAvailable(true);
         return modelMapper.map(parkingSpaceRepository.save(parkingSpace), ParkingSpaceDTO.class);
     }
 
@@ -41,7 +41,7 @@ public class ParkingSpaceServiceImpl implements ParkingSpaceService {
                 .orElseThrow(() -> new NotFoundException("Parking space not found with id: " + id));
 
         modelMapper.map(parkingSpaceDTO, existingSpace);
-        existingSpace.setParking_id(id); // Ensure ID doesn't get overwritten
+        existingSpace.setParking_id(id);
         return modelMapper.map(parkingSpaceRepository.save(existingSpace), ParkingSpaceDTO.class);
     }
 

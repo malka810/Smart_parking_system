@@ -29,7 +29,7 @@ public class VehicleServiceImpl implements VehicleService {
             vehicleRepository.save(vehicle);
             return "Vehicle registered successfully with ID: " + vehicle.getVehicleId();
         } catch (ObjectOptimisticLockingFailureException e) {
-            // Retry logic or return appropriate error message
+
             return "Vehicle registration failed due to concurrent modification. Please try again.";
         }
     }
@@ -67,7 +67,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleDTO> getVehiclesByUser(Long id) {
-        Optional<Vehicle> vehicles = vehicleRepository.findById(id); // Assuming you have this method
+        Optional<Vehicle> vehicles = vehicleRepository.findById(id);
         return vehicles.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -77,7 +77,7 @@ public class VehicleServiceImpl implements VehicleService {
         Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
         if (optionalVehicle.isPresent()) {
             Vehicle vehicle = optionalVehicle.get();
-            vehicle.setParked(isParked);  // Use setter method
+            vehicle.setParked(isParked);
             vehicleRepository.save(vehicle);
             return "Parking status updated to: " + isParked;
         }
@@ -86,7 +86,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleDTO> getAllVehicles() {
-        List<Vehicle> vehicles = vehicleRepository.findAll(); // Assuming you're using JPA
+        List<Vehicle> vehicles = vehicleRepository.findAll();
         return vehicles.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
